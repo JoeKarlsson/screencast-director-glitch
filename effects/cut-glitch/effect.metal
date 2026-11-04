@@ -1,5 +1,6 @@
 // Cut glitch: a few motivated moments instead of a glitch on every cut.
-//   jump back (back from a cold open)   a short VHS rewind with a VCR "<< REW", then "> PLAY" for a beat
+//   jump back (back from a cold open)   a short VHS rewind with a VCR "<< REW" (no PLAY after: the
+//                                       video's title often appears right there as it lands)
 //   new section (a chapter or slate)    the picture breaks up hard for a moment; the six kinds of
 //                                       break-up take turns (blocks, slip, wave, melt, burst, comb)
 //   everything else                     nothing: plain cuts stay clean, and B-roll gets the profile's
@@ -8,37 +9,31 @@
 // scales how hard it hits; `rewind` is how many seconds the rewind takes; `osd` 0 hides the VCR text.
 // Sizes are in pixels at 1080p and scale with the layer's short side.
 
-// VCR on-screen display: a blocky 5x7 font, just the glyphs "<< REW" and "> PLAY" need.
-constant int GLYPHS[10][7] = {
+// VCR on-screen display: "<< REW" in a blocky 5x7 font, one row of bits per glyph line.
+constant int GLYPHS[5][7] = {
   {1, 3, 7, 15, 7, 3, 1},         // left triangle
-  {16, 24, 28, 30, 28, 24, 16},   // right triangle
   {0, 0, 0, 0, 0, 0, 0},          // space
   {30, 17, 17, 30, 20, 18, 17},   // R
   {31, 16, 16, 30, 16, 16, 31},   // E
   {17, 17, 17, 21, 21, 21, 10},   // W
-  {30, 17, 17, 30, 16, 16, 16},   // P
-  {16, 16, 16, 16, 16, 16, 31},   // L
-  {14, 17, 17, 31, 17, 17, 17},   // A
-  {17, 17, 10, 4, 4, 4, 4},       // Y
 };
-constant int REW_TEXT[6] = {0, 0, 2, 3, 4, 5};
-constant int PLAY_TEXT[6] = {1, 2, 6, 7, 8, 9};
+constant int REW_TEXT[6] = {0, 0, 1, 2, 3, 4};
 
-// Whether `pos` is inside a lit pixel of the text, drawn at the top left.
-float osdText(float2 pos, float k, bool play) {
+// Whether `pos` is inside a lit pixel of the text, drawn at the top left: 13% down, below the tabs
+// TikTok, Reels and Shorts lay over a vertical video (the same spot as 140 px at 1080p landscape).
+float osdText(float2 pos, float k, float top) {
   float cell = 9.0 * k;
-  float2 q = (pos - float2(80.0, 140.0) * k) / cell;
+  float2 q = (pos - float2(80.0 * k, top)) / cell;
   if (q.x < 0.0 || q.y < 0.0 || q.y >= 7.0 || q.x >= 36.0) return 0.0;
   int ch = int(q.x / 6.0);
   int col = int(q.x) - ch * 6;
   if (col >= 5) return 0.0;
-  int g = play ? PLAY_TEXT[ch] : REW_TEXT[ch];
-  return float((GLYPHS[g][int(q.y)] >> (4 - col)) & 1);
+  return float((GLYPHS[REW_TEXT[ch]][int(q.y)] >> (4 - col)) & 1);
 }
 
-float4 withOSD(float4 c, float2 pos, float k, bool play) {
-  float shadow = osdText(pos - float2(5.0, 5.0) * k, k, play);
-  float lit = osdText(pos, k, play);
+float4 withOSD(float4 c, float2 pos, float k, float top) {
+  float shadow = osdText(pos - float2(5.0, 5.0) * k, k, top);
+  float lit = osdText(pos, k, top);
   c.rgb = mix(c.rgb, c.rgb * 0.35, shadow);
   return float4(mix(c.rgb, float3(1.0), lit), 1.0);
 }
@@ -122,9 +117,8 @@ float4 effect(Layer src, float2 pos, Signals s, constant float *p) {
     if (d >= -0.06 && d < rewind) {
       float g = d < 0.0 ? 1.0 : 1.0 - smoothstep(0.0, rewind, d);
       float4 c = rewound(src, pos, s, g, k);
-      return osd > 0.0 ? withOSD(c, pos, k, false) : c;
+      return osd > 0.0 ? withOSD(c, pos, k, 0.13 * s.size.y) : c;
     }
-    if (osd > 0.0 && d >= rewind && d < rewind + 0.5) return withOSD(src.read(pos), pos, k, true);
     return src.read(pos);
   }
   if (s.cutKind == 5.0) {

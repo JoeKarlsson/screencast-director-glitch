@@ -11,26 +11,26 @@
       "max": 1
     },
     {
-      "name": "box",
-      "default": 0.5,
-      "min": 0.3,
-      "max": 3
+      "name": "labels",
+      "default": 1,
+      "min": 0,
+      "max": 1
     },
     {
       "name": "lines",
-      "default": 0.5,
-      "min": 0,
-      "max": 1
-    },
-    {
-      "name": "labels",
-      "default": 0.8,
-      "min": 0,
-      "max": 1
-    },
-    {
-      "name": "invert",
       "default": 0,
+      "min": 0,
+      "max": 1
+    },
+    {
+      "name": "person",
+      "default": 0,
+      "min": 0,
+      "max": 1
+    },
+    {
+      "name": "objects",
+      "default": 1,
       "min": 0,
       "max": 1
     }

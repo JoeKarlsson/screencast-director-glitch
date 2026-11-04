@@ -7,12 +7,12 @@ Analog and glitch effects for [Screencast Director](https://github.com/JoeKarlss
 | Effect | Layer | What it does |
 |---|---|---|
 | `analog` | frame | Chroma split and bleed, bloom on highlights, an optional green-phosphor grade, scanlines, grain, a vignette, and a tape-tracking band that rolls through every 14 s |
-| `track` | camera | Blob tracking: a thin box on each joint and fingertip Screencast Director follows on the camera, with its id and position in pixel type, lines chaining nearby points, and optionally the colors flipped inside each box. Works on the `screen` layer too (the pointer and recent clicks) |
+| `track` | camera | Detector boxes: a thin outline around each thing Screencast Director finds on the camera (the face, each hand, something held up, optionally the person) with a tag naming it and Vision's confidence, like `FACE 92%`. Nothing is drawn inside a box. On the `screen` layer it outlines the pointer and recent clicks |
 | `cut-glitch` | frame | A few motivated moments instead of a glitch on every cut: a short VHS rewind with VCR `REW` / `PLAY` text when the video jumps back after a cold open, and a hard break-up at each new section (a chapter or slate title; six kinds take turns). Plain cuts stay clean |
 
 `analog` params (defaults in brackets): `chroma` [5] and `bleed` [10] in pixels at 1080p, `scanlines` [0.2], `grain` [0.035], `bloom` [1], `vignette` [0.35], `tracking` [1] (the band's strength; 0 turns it off), `phosphor` [0] (0 keeps the picture's color, 1 is green-phosphor monochrome; 0.45 gives a Matrix-green cast).
 
-`track` params: `amount` [1], `box` [0.5] (box size against the person), `lines` [0.5], `labels` [0.8], `invert` [0] (1 flips the colors inside each box). Needs a Screencast Director with effect tracking.
+`track` params (defaults in brackets): `amount` [1], `labels` [1] (0 hides the tags), `lines` [0] (lines joining the boxes), `person` [0] (1 also outlines the whole person), `objects` [1] (0 skips held-up things). Needs a Screencast Director with effect tracking.
 
 `cut-glitch` params: `window` [0.12] (seconds each side of a section change), `amount` [1], `rewind` [0.35] (seconds the rewind takes), `osd` [1] (0 hides the VCR text).
 

@@ -1,9 +1,10 @@
-// Analog: a worn VHS/CRT signal. Chroma split and bleed, bloom that pushes warm highlights,
-// scanlines, grain, a vignette, and a tape-tracking band that rolls through every 14 s.
+// Analog: a worn VHS/CRT signal. Chroma split and bleed, bloom that glows from the highlights,
+// scanlines, grain, a vignette, and a tape-tracking band that rolls through every 14 s. `phosphor`
+// pulls the picture toward a green phosphor screen (0 keeps its own color, 1 is green monochrome).
 // Sizes are in pixels at 1080p and scale with the layer's short side.
 
 float4 effect(Layer src, float2 pos, Signals s, constant float *p) {
-  float chroma = p[0], bleed = p[1], scan = p[2], grain = p[3], bloom = p[4], vig = p[5], tracking = p[6];
+  float chroma = p[0], bleed = p[1], scan = p[2], grain = p[3], bloom = p[4], vig = p[5], tracking = p[6], phosphor = p[7];
   float k = min(s.size.x, s.size.y) / 1080.0;
 
   // Tracking band: a 70 px strip that wobbles sideways and washes out as it rolls down.
@@ -35,7 +36,12 @@ float4 effect(Layer src, float2 pos, Signals s, constant float *p) {
       glow += max(src.read(pos + float2(cos(ang), sin(ang)) * r).rgb - 0.65, 0.0) * 2.5;
     }
   }
-  col += glow / 16.0 * float3(0.55, 0.32, 0.12) * bloom;
+  col += glow / 16.0 * mix(float3(0.55, 0.32, 0.12), float3(0.16, 0.55, 0.26), phosphor) * bloom;
+
+  // Phosphor: brightness drawn in green, with the blacks lifted a touch toward green.
+  float bright = luma(float4(col, 1));
+  float3 green = pow(bright, 1.15) * float3(0.42, 1.0, 0.56) + float3(0.0, 0.025, 0.012);
+  col = mix(col, green, phosphor);
 
   // Inside the band: washed out and noisy.
   col = mix(col, col * 0.85 + 0.12, inBand) + inBand * (hash(pos + s.frame) - 0.5) * 0.12;

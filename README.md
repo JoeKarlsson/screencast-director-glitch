@@ -6,10 +6,10 @@ Analog and glitch effects for [Screencast Director](https://github.com/JoeKarlss
 
 | Effect | Layer | What it does |
 |---|---|---|
-| `analog` | frame | Chroma split and bleed, warm bloom on highlights, scanlines, grain, a vignette, and a tape-tracking band that rolls through every 14 s |
-| `cut-glitch` | frame | The picture breaks up for a moment around every cut, B-roll, layout change and punch-in: macroblocks jump and smear, rows tear, the color splits and crushes |
+| `analog` | frame | Chroma split and bleed, bloom on highlights, an optional green-phosphor grade, scanlines, grain, a vignette, and a tape-tracking band that rolls through every 14 s |
+| `cut-glitch` | frame | The picture breaks up for a moment around every cut, B-roll, layout change and punch-in. Six kinds take turns (blocks, slip, wave, melt, chroma burst, comb), each cut with its own length and strength |
 
-`analog` params (defaults in brackets): `chroma` [5] and `bleed` [10] in pixels at 1080p, `scanlines` [0.2], `grain` [0.035], `bloom` [1], `vignette` [0.35], `tracking` [1] (the band's strength; 0 turns it off).
+`analog` params (defaults in brackets): `chroma` [5] and `bleed` [10] in pixels at 1080p, `scanlines` [0.2], `grain` [0.035], `bloom` [1], `vignette` [0.35], `tracking` [1] (the band's strength; 0 turns it off), `phosphor` [0] (0 keeps the picture's color, 1 is green-phosphor monochrome; 0.45 gives a Matrix-green cast).
 
 `cut-glitch` params: `window` [0.12] (seconds each side of the change), `amount` [1].
 

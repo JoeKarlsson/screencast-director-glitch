@@ -9,6 +9,7 @@
     { "name": "grain", "default": 0.035, "min": 0, "max": 0.2 },
     { "name": "bloom", "default": 1, "min": 0, "max": 3 },
     { "name": "vignette", "default": 0.35, "min": 0, "max": 1 },
-    { "name": "tracking", "default": 1, "min": 0, "max": 1 }
+    { "name": "tracking", "default": 1, "min": 0, "max": 1 },
+    { "name": "phosphor", "default": 0, "min": 0, "max": 1 }
   ]
 }

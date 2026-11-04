@@ -1,0 +1,9 @@
+{
+  "title": "Cut glitch",
+  "layer": "frame",
+  "reach": 400,
+  "params": [
+    { "name": "window", "default": 0.12, "min": 0.04, "max": 0.5 },
+    { "name": "amount", "default": 1, "min": 0, "max": 2 }
+  ]
+}
